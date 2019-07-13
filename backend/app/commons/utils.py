@@ -9,14 +9,18 @@ def convertDatetime(tiempo):
 correoSistemaSec = "florestacksistemasec2@gmail.com"
 contrasenaSistemaSec = "florestack123"
 
-def envioCorreo(destinatario,asunto,mensage):
-    """
-    me = 'Subject: {}\n\n{}'.format(asunto,mensage)
-    server = smtplib.SMTP('smtp.gmail.com',587)
-    server.starttls()
-    server.login(correoSistemaSec,contrasenaSistemaSec)
-    server.sendmail(correoSistemaSec,destinatario,me)
-    server.quit()
-    """
+def envioCorreo(destinatarios,asunto,mensage):
+    try:
+        me = 'Subject: {}\n\n{}'.format(asunto,mensage)
+        server = smtplib.SMTP('smtp.gmail.com',587)
+        server.starttls()
+        server.login(correoSistemaSec,contrasenaSistemaSec)
+        server.sendmail(correoSistemaSec,destinatarios,me)
+        server.quit()
+        print("ENVIO CORREOS")
+    except:
+        print("NO ENVIO CORREOS")
+        return
     return
+
 
