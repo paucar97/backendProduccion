@@ -77,7 +77,7 @@ class Alumno_actividad(db.Model):
         return Alumno_actividad.query.filter_by(id_actividad = idActividad,id_grupo = idGrupo)
     
     @classmethod
-    def cambiarNota(idActividad, idAlumno, notaFinal):
+    def cambiarNota(self,idActividad, idAlumno, notaFinal):
         alumnoCalificado = Alumno_actividad.query.filter_by(id_actividad = idActividad,id_alumno = idUsuario).first()
         alumnoCalificado.nota_publicada = notaFinal
         db.sesion.commit()
