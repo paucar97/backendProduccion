@@ -75,7 +75,9 @@ def ingresarComentarioAlumno(idActividad, idAlumno, comentario):
             reg_comment.comentario_alumno = comentario
             u = Usuario().getOneId(reg_comment.id_calificador)
             act = Actividad().getOne(idActividad)
-            envioCorreo(u.email,'COMENTARIO EN LA ACTIVIDAD {} DE {} {}'.format(act.nombre,u.nombre,u.apellido_paterno),comentario)
+            l=[]
+            l.append(u.email)
+            envioCorreo(l,'COMENTARIO EN LA ACTIVIDAD {} DE {} {}'.format(act.nombre,u.nombre,u.apellido_paterno),comentario)
 
             db.session.commit()
             d.message = "Comentario agregado correctamente"
@@ -105,7 +107,9 @@ def responderComentarioAlumno(idActividad, idAlumno, idProfesor, respuesta):
             db.session.commit()
             u = Usuario().getOneId(idAlumno)
             act = Actividad().getOne(idActividad)
-            envioCorreo(u.email,'RESPUESTA DE COMENTARIO EN LA ACTIVIDAD {}'.format(act.nombre),respuesta)
+            l= []
+            l.append(u.email)
+            envioCorreo(l,'RESPUESTA DE COMENTARIO EN LA ACTIVIDAD {}'.format(act.nombre),respuesta)
             d.message = "Respuesta agregada correctamente"
     except Exception as ex:
         d.opcode = 1
@@ -450,10 +454,11 @@ def publicarNotificacionesAlumnos(idActividad):
     cursoActividad = db.session.query(Actividad.id_actividad, Curso.codigo).filter(Actividad.id_actividad == idActividad).join(Horario, Actividad.id_horario == Horario.id_horario).join(Curso, Horario.id_curso == Curso.id_curso).first()
     mensaje = cursoActividad.codigo + " - Se registro la nota de la Actividad: " + actividadEvaluada.nombre
     semestre = Semestre().getOne()
-
+    lstAlumnos=[]
     for alumno in alumnosCalificados:
         alumnoAnalizado = Usuario.query.filter_by(id_usuario = alumno.id_alumno).first()
-        envioCorreo(alumnoAnalizado.email, "SEC2 - Registro de Notas", mensaje)
+        lstAlumnos.append(alumnoAnalizado.email)
+        
         publicarNotificacionGeneral(semestre.id_semestre, alumno.id_alumno, mensaje, idActividad)
         if actividadEvaluada.flg_multicalificable == 0:
             notaFinal = Alumno_actividad_calificacion().obtenerNotaActividad(idActividad, alumno.id_alumno)
@@ -463,14 +468,17 @@ def publicarNotificacionesAlumnos(idActividad):
     idHorario = db.session.query(Actividad.id_actividad, Horario.id_horario).filter(Actividad.id_actividad == idActividad).join(Horario, Actividad.id_horario == Horario.id_horario).first()
     profesoresHorario = Permiso_usuario_horario.query.filter(and_(Permiso_usuario_horario.id_horario == idHorario.id_horario, Permiso_usuario_horario.id_permiso == 1))
 
+    lstProfesores=[]
     for profesor in profesoresHorario:
         profesorAnalizado = Usuario.query.filter_by(id_usuario = profesor.id_usuario).first()
-        print(profesorAnalizado.email)
-        envioCorreo(profesorAnalizado.email, "SEC2 - Registro de Notas", cursoActividad.codigo + " - Se registraron las notas de la Actividad: " + actividadEvaluada.nombre)
+        lstProfesores.append(profesorAnalizado.email)
         publicarNotificacionGeneral(semestre.id_semestre, profesor.id_usuario, cursoActividad.codigo + " - Se registraron las notas de la Actividad: " + actividadEvaluada.nombre, idActividad)
     
     d['succeed'] = True
     d['message'] = "Notas publicadas"
+    envioCorreo(lstAlumnos, "SEC2 - Registro de Notas", mensaje)
+    envioCorreo(lstProfesores, "SEC2 - Registro de Notas", cursoActividad.codigo + " - Se registraron las notas de la Actividad: " + actividadEvaluada.nombre)
+        
     return d
 
 def crearSolicitudRevisionProfesor(idActividad, idJpReviso):
@@ -493,14 +501,15 @@ def crearSolicitudRevisionProfesor(idActividad, idJpReviso):
     )
 
     aux2 = Feedback_actividad().addOne(aux)
-
+    lstProfesor =[]
     for profesor in profesoresHorario:
         profesorAnalizado = Usuario.query.filter_by(id_usuario = profesor.id_usuario).first()
-        print(profesorAnalizado.email)
-        envioCorreo(profesorAnalizado.email, "SEC2 - Registro de Notas", cursoActividad.codigo + " - Se registraron las notas de la Actividad: " + actividadEvaluada.nombre + ". Favor de revisar estas para aprobacion.")
+        lstProfesor.append(profesorAnalizado.email)
         publicarNotificacionGeneral(semestre.id_semestre, profesor.id_usuario, cursoActividad.codigo + " - Se registraron las notas de la Actividad: " + actividadEvaluada.nombre + ". Favor de revisar estas para aprobacion.", idActividad)
     d['succeed'] = True
     d['message'] = "Notas publicadas"
+    envioCorreo(lstProfesor, "SEC2 - Registro de Notas", cursoActividad.codigo + " - Se registraron las notas de la Actividad: " + actividadEvaluada.nombre + ". Favor de revisar estas para aprobacion.")
+
     return d 
 
     feedbackCreado = Feedback_actividad(
