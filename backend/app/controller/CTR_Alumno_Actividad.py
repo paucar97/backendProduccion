@@ -1041,7 +1041,7 @@ def obtenerProfesoresPublicados(idActividad, idAlumno):
         for profesor in profesoresCalificados:
             e = {}
             e['idCalificador'] = profesor.id_calificador
-            calificador = Usuario.query.filter(Usuario.id_usuario == calificacion.id_calificador).first()
+            calificador = Usuario.query.filter(Usuario.id_usuario == profesor.id_calificador).first()
             e['nombreCalificador'] = calificador.nombre + ' ' + calificador.apellido_paterno + ' ' + calificador.apellido_materno
 
             listaProfesores.append(e)
