@@ -409,10 +409,16 @@ def publicarNotificacionesAlumnos(idActividad):
         d['succeed'] = False
         d['message'] = "Falta alumnos por calificar"
         return d
-
+    actividadEvaluada = Actividad.query.filter_by(id_actividad = idActividad).first()
+    if actividadEvaluada.flg_multicalificable == 1:
+        alumnosFaltantesCalificados = Alumno_actividad.query.filter(and_(Alumno_actividad.id_actividad == idActividad, Alumno_actividad.nota_publicada == None)).all()
+        if len(alumnosFaltantesCalificados) > 0:
+            d['succeed'] = False
+            d['message'] = "Falta elegir nota de uno o mas alumnos"
+            return d
+        
     alumnosCalificados = Alumno_actividad.query.filter(and_(Alumno_actividad.id_actividad == idActividad, Alumno_actividad.flg_calificado == 1)).all()
     cursoActividad = db.session.query(Actividad.id_actividad, Curso.codigo).filter(Actividad.id_actividad == idActividad).join(Horario, Actividad.id_horario == Horario.id_horario).join(Curso, Horario.id_curso == Curso.id_curso).first()
-    actividadEvaluada = Actividad.query.filter_by(id_actividad = idActividad).first()
     mensaje = cursoActividad.codigo + " - Se registro la nota de la Actividad: " + actividadEvaluada.nombre
     semestre = Semestre().getOne()
 
@@ -422,7 +428,7 @@ def publicarNotificacionesAlumnos(idActividad):
         publicarNotificacionGeneral(semestre.id_semestre, alumno.id_alumno, mensaje, idActividad)
         if actividadEvaluada.flg_multicalificable == 0:
             notaFinal = Alumno_actividad_calificacion().obtenerNotaActividad(idActividad, alumno.id_alumno)
-            cambiarNota(idActividad, alumno.id_alumno, notaFinal)
+            Alumno_actividad().cambiarNota(idActividad, alumno.id_alumno, notaFinal)
 
     Alumno_actividad().publicarNotas(idActividad)
     idHorario = db.session.query(Actividad.id_actividad, Horario.id_horario).filter(Actividad.id_actividad == idActividad).join(Horario, Actividad.id_horario == Horario.id_horario).first()
@@ -1086,3 +1092,12 @@ def obtenerProfesoresPublicadosGrupal(idActividad, idGrupo):
         d['succeed'] = False
         d['message'] = 'No hay publicaciones para este alumno.'
         return d
+
+def elegirNotaMulticalificableGrupal(idActividad, idGrupo, notaFinal):
+    miembrosGrupo = Grupo_alumno_horario.query.filter(Grupo_alumno_horario.id_grupo == idGrupo).all()
+    for miembro in miembrosGrupo:
+        aux = Alumno_actividad().cambiarNota(idActividad, idAlumno, notaFinal)
+    d = {}
+    d['succeed'] = aux
+    d['message'] = 'Cambio correcto de nota.'
+    return d
