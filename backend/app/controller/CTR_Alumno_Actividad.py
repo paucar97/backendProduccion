@@ -270,6 +270,7 @@ def obtenerNotaAlumno(idAlumno, idActividad, tipo, idCalificador):
     
     d = {}
 
+    d['notaFinal'] = aux.nota_publicada
     d['flgCalificado'] = aux.flg_calificado
     d['idActividad']= idActividad
     d['idAlumno']= idAlumno
@@ -1100,4 +1101,16 @@ def elegirNotaMulticalificableGrupal(idActividad, idGrupo, notaFinal):
     d = {}
     d['succeed'] = aux
     d['message'] = 'Cambio correcto de nota.'
+    return d
+
+def obtenerNotaFinal(idActividad, idAlumno):
+    notaFinal = Alumno_actividad.query.filter(and_(Alumno_actividad.id_actividad == idActividad, Alumno_actividad.id_alumno == idAlumno)).first().nota_publicada
+    d = {}
+    d['notaFinal'] = notaFinal
+    return d
+
+def obtenerNotaFinalGrupal(idActividad, idGrupo):
+    notaFinal = Alumno_actividad.query.filter(and_(Alumno_actividad.id_actividad == idActividad, Alumno_actividad.id_grupo == idGrupo)).first().nota_publicada
+    d = {}
+    d['notaFinal'] = notaFinal
     return d
