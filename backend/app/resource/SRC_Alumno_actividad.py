@@ -93,7 +93,7 @@ class Obtener_nota_grupo(Resource):
         idActividad = data['idActividad']
         idGrupo = data['idGrupo']
         idJp = data['idJp']
-
+        #print(idActividad,idGrupo,idJp)
         return controller.obtenerNotaGrupo(idActividad, idGrupo, idJp)
 
 class Editar_nota_grupo(Resource):
