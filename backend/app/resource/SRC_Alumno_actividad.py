@@ -267,3 +267,11 @@ class Obtener_profesores_calificados_grupal(Resource):
         idActividad = data['idActividad']
         idGrupo = data['idGrupo']
         return controller.obtenerProfesoresPublicadosGrupal(idActividad, idGrupo)
+
+class Elegir_nota_multicalificable_grupal(Resource):
+    def post(self):
+        data = request.get_json()
+        idActividad = data['idActividad']
+        idGrupo = data['idGrupo']
+        notaFinal = data['notaFinal']
+        return controller.elegirNotaMulticalificableGrupal(idActividad, idGrupo, notaFinal)
