@@ -51,3 +51,4 @@ class Horario(db.Model):
     def getAll(self,idCurso,idSemestre):
         d = Horario.query.filter(and_(Horario.id_curso== idCurso, Horario.id_semestre == idSemestre)).all()
         return d
+

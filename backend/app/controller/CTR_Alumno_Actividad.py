@@ -289,7 +289,36 @@ def obtenerNotaAlumno(idAlumno, idActividad, tipo, idCalificador):
     d['idRubrica'] = actividadAnalizada.id_rubrica
 
     d['calificacion']= listarCalificacion(idAlumno, idActividad, idCalificador, actividadAnalizada.id_rubrica)
-    
+    ## ESTO ES PARA EDITARA##
+    if aux.flg_calificado == 1 :
+        d['flgIdCalificadorEsProfe'] = 0
+        
+        idHorario = actividadAux.id_horario
+        semestre = Semestre().getOne()
+        profes = Permiso_usuario_horario().getAllProfes(semestre.id_semestre,idHorario)
+
+        cantidadProfes = 0
+        flgEsProfe = 0
+
+        for record in profes:
+            #print(idCalificador,record.id_usuario)
+            if int(record.id_usuario) == int(idCalificador):
+                #print('entro')
+                flgEsProfe = 1
+            if record.id_usuario == d['idCalificador']:
+                d['flgIdCalificadorEsProfe'] = 1
+            cantidadProfes += 1
+
+        if cantidadProfes > 1:
+            d['flgMasUnoProfe'] = 1
+        else:
+            d['flgMasUnoProfe'] = 0
+        d['flgEsProfe'] = flgEsProfe
+    else:
+        d['flgIdCalificadorEsProfe'] =None
+        d['flgMasUnoProfe'] =None
+        d['flgEsProfe'] =None
+
     return d
 
 
