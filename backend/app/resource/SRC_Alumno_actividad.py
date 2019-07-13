@@ -93,6 +93,7 @@ class Obtener_nota_grupo(Resource):
         idActividad = data['idActividad']
         idGrupo = data['idGrupo']
         idJp = data['idJp']
+
         return controller.obtenerNotaGrupo(idActividad, idGrupo, idJp)
 
 class Editar_nota_grupo(Resource):
@@ -237,3 +238,25 @@ class Obtener_nota_alumno_publicada(Resource):
         tipo = data['tipo']
         idCalificador = data['idCalificador']
         return controller.obtenerNotaAlumnoPublicada(idAlumno, idActividad, tipo, idCalificador)
+
+class Obtener_notas_alumno_multicalificable(Resource):
+    def post(self):
+        data = request.get_json()
+        idAlumno = data['idAlumno']
+        idActividad = data['idActividad']
+        return controller.obtenerTodasCalificacionesMulti(idAlumno, idActividad, 4)
+
+class Elegir_nota_multicalificable(Resource):
+    def post(self):
+        data = request.get_json()
+        idActividad = data['idActividad']
+        idAlumno = data['idAlumno']
+        notaFinal = data['notaFinal']
+        return controller.elegirNotaMulticalificable(idActividad, idAlumno, notaFinal)
+
+class Obtener_profesores_calificados(Resource):
+    def post(self):
+        data = request.get_json()
+        idActividad = data['idActividad']
+        idAlumno = data['idAlumno']
+        return controller.obtenerProfesoresPublicados(idActividad, idAlumno)

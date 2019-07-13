@@ -18,7 +18,6 @@ class Alumno_actividad_calificacion(db.Model):
             [Alumno_actividad.id_actividad, Alumno_actividad.id_alumno]
         ),
     )
-
     
     id_calificador = db.Column('ID_CALIFICADOR',db.Integer, primary_key=True, nullable=False)
     nota = db.Column('NOTA',db.Float, nullable= True)
@@ -57,6 +56,7 @@ class Alumno_actividad_calificacion(db.Model):
 
     @classmethod
     def editarNotaAlumno(self, idActividad, idAlumno, idJpAnt, idJpN ,nota, flgFalta, flgCompleto):
+        print(idActividad, idAlumno, idJpAnt)
         alumnoActividad = Alumno_actividad_calificacion.query.filter_by(id_actividad = idActividad, id_alumno = idAlumno, id_calificador = idJpAnt).first()
         alumnoActividad.nota = nota
         alumnoActividad.flg_falta = flgFalta
@@ -81,4 +81,11 @@ class Alumno_actividad_calificacion(db.Model):
         alumnoAspectoNota.nota = nota
         #print("=DSP=",alumnoAspectoNota.nota)
         db.session.commit()
-        return 
+        return
+
+    @classmethod
+    def obtenerNotaActividad(self, idActividad, idAlumno):
+        idRubrica = Rubrica().getIdRubricaEvaluacion(idActividad)
+        aux = Alumno_actividad_calificacion.query.filter(and_(Alumno_actividad_calificacion.id_actividad == idActividad, Alumno_actividad_calificacion.id_alumno == idAlumno, Alumno_actividad_calificacion.id_rubrica == idRubrica)).first()
+        return aux.nota
+    
