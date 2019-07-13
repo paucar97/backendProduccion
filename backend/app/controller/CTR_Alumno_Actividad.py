@@ -948,6 +948,7 @@ def sumaCoevaluacion(idGrupo, idActividad):
                     esta = True
                     lstAspectos[indice]['nota'] += notaQ
                     lstAspectos[indice]['maxPuntaje'] = aspecto.puntaje_max  
+                    lstAspectos[indice]['cuentaCalificados'] += 1  
                     break
                 indice += 1
             if esta == False:
@@ -955,8 +956,9 @@ def sumaCoevaluacion(idGrupo, idActividad):
                 aux['nombreAspecto'] = aspecto.descripcion
                 aux['nota'] = notaQ
                 aux['maxPuntaje'] = aspecto.puntaje_max
+                aux['cuentaCalificados'] = 1
                 lstAspectos.append(aux)
-            
+
             tipoClasificacion =  aspecto.tipo_clasificacion
             if tipoClasificacion == 1:
                 sumaDesempeno = sumaDesempeno + notaQ
