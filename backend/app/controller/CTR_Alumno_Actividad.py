@@ -915,6 +915,14 @@ def sumaCoevaluacion(idGrupo, idActividad):
     rubrica = Rubrica.query.filter(and_(Rubrica.id_actividad == idActividad, Rubrica.tipo == 3,Rubrica.flg_activo == 1)).first()
     miembrosGrupo = Grupo_alumno_horario.query.filter(Grupo_alumno_horario.id_grupo == idGrupo).all()
     aspectos = Rubrica_aspecto.query.filter(Rubrica_aspecto.id_rubrica == rubrica.id_rubrica).subquery()
+    listaAspectos = []
+    for aspecto in aspectos:
+        aspectoAux = Aspecto.query.filter(Aspecto.id_aspecto == aspecto.id_aspecto).first()
+        f = {}
+        f['maxPuntaje'] = aspectoAux.puntaje_max
+        f['nombreAspecto'] = aspectoAux.descripcion
+        listaAspectos.append(f)
+
     listaNotas = []
     for miembro in miembrosGrupo:
         e = {}
@@ -962,6 +970,7 @@ def sumaCoevaluacion(idGrupo, idActividad):
         e['nombreAspectos'] = lstAspectos
         listaNotas.append(e)
     d = {}
+    d['listaAspectos'] = listaAspectos
     d['listaNotas'] = listaNotas
     
     return d
