@@ -180,8 +180,7 @@ def listaAlumnos(idActividad):
     """
 
 def listarCalificacion(idAlumno, idActividad, idCalificador, idRubrica):
-    print('-'*10)
-    print(idAlumno, idActividad, idCalificador, idRubrica)
+    
     actividadAux = Actividad.query.filter(Actividad.id_actividad == idActividad).first()
     if actividadAux.flg_multicalificable == 1:
         alumnoCalificacion = Alumno_actividad_calificacion.query.filter(and_(Alumno_actividad_calificacion.id_actividad == idActividad, Alumno_actividad_calificacion.id_alumno == idAlumno, Alumno_actividad_calificacion.id_rubrica == idRubrica, Alumno_actividad_calificacion.id_calificador == idCalificador)).first()
@@ -264,8 +263,8 @@ def listarCalificacion(idAlumno, idActividad, idCalificador, idRubrica):
     
 
 def obtenerNotaAlumno(idAlumno, idActividad, tipo, idCalificador):
-    #actividadSolicitada = Actividad.query.filter(and_(Actividad.id_actividad == idActividad)).first()
-    #if actividadSolicitada.flg_multicalificable == 0:
+    actividadSolicitada = Actividad.query.filter(and_(Actividad.id_actividad == idActividad)).first()
+
     aux = Alumno_actividad.query.filter(and_(Alumno_actividad.id_alumno == idAlumno, Alumno_actividad.id_actividad == idActividad)).first()
     actividadAnalizada = Rubrica.query.filter(and_(Rubrica.id_actividad == idActividad, Rubrica.tipo == tipo,Rubrica.flg_activo==1)).first()
     
@@ -343,8 +342,44 @@ def calificarAlumno(idActividad, idAlumno, idRubrica, idJp, nota, listaNotaAspec
     d['message'] = "succeed"
     return d
 
+def obtenerTodasCalificacionesMulti(idAlumno, idActividad, tipo):
+    aux = Alumno_actividad.query.filter(and_(Alumno_actividad.id_alumno == idAlumno, Alumno_actividad.id_actividad == idActividad)).first()
+    actividadAnalizada = Rubrica.query.filter(and_(Rubrica.id_actividad == idActividad, Rubrica.tipo == tipo,Rubrica.flg_activo==1)).first()
+    
+    d = {}
+
+    d['flgCalificado'] = aux.flg_calificado
+    d['idActividad']= idActividad
+    d['idAlumno']= idAlumno
+    d['idGrupo']= aux.id_grupo
+    d['flgEntregable']= aux.flag_entregable
+    listaCalificaciones = []
+    actividadAux = Actividad.query.filter(Actividad.id_actividad == idActividad).first()
+    
+    if actividadAux.flg_multicalificable == 1:
+        alumnoCalificacion = Alumno_actividad_calificacion.query.filter(and_(Alumno_actividad_calificacion.id_actividad == idActividad, Alumno_actividad_calificacion.id_alumno == idAlumno, Alumno_actividad_calificacion.id_rubrica == actividadAnalizada.id_rubrica)).all()
+
+        for calificacion in alumnoCalificacion:
+            e = {}
+            e['idCalificador'] = calificacion.id_calificador
+            calificador = Usuario.query.filter(Usuario.id_usuario == calificacion.id_calificador).first()
+            e['nombreCalificador'] = calificador.nombre + ' ' + calificador.apellido_paterno + ' ' + calificador.apellido_materno
+            e['calificacion'] = listarCalificacion(idAlumno, idActividad, calificacion.id_calificador, actividadAnalizada.id_rubrica)        
+            listaCalificaciones.append(e)
+
+        d['listaCalificaciones'] = listaCalificaciones
+        return d
+    
+    else:
+        e = {}
+        e['succeed'] = False
+        e['message'] = "La actividad no es Multicalificable"
+        return e
+
 def editarNotaAlumno(idActividad, idAlumno, idRubrica, idJpAnt, idJpN, nota, listaNotaAspectos, flgFalta, flgCompleto):
     aux = Alumno_actividad_calificacion().editarNotaAlumno(idActividad, idAlumno, idJpAnt, idJpN, nota, flgFalta, flgCompleto)
+    print(idActividad, idAlumno, idRubrica)
+    #Alumno_actividad_calificacion().updateOneNota(idActividad,idAlumno,idRubrica,nota)
     for notaAspecto in listaNotaAspectos:
         idAspecto = notaAspecto['idAspecto']
         Alumno_nota_aspecto().updateNota(idActividad, idRubrica, idAspecto, idAlumno, notaAspecto['nota'], notaAspecto['comentario'])
@@ -383,9 +418,11 @@ def publicarNotificacionesAlumnos(idActividad):
 
     for alumno in alumnosCalificados:
         alumnoAnalizado = Usuario.query.filter_by(id_usuario = alumno.id_alumno).first()
-        print(alumnoAnalizado.email)
         envioCorreo(alumnoAnalizado.email, "SEC2 - Registro de Notas", mensaje)
         publicarNotificacionGeneral(semestre.id_semestre, alumno.id_alumno, mensaje, idActividad)
+        if actividadEvaluada.flg_multicalificable == 0:
+            notaFinal = Alumno_actividad_calificacion().obtenerNotaActividad(idActividad, alumno.id_alumno)
+            cambiarNota(idActividad, alumno.id_alumno, notaFinal)
 
     Alumno_actividad().publicarNotas(idActividad)
     idHorario = db.session.query(Actividad.id_actividad, Horario.id_horario).filter(Actividad.id_actividad == idActividad).join(Horario, Actividad.id_horario == Horario.id_horario).first()
@@ -477,7 +514,6 @@ def listarRevisiones(idProfesor):
         listaFeedbacks.append(e)
     d['listaFeedbacks'] = listaFeedbacks    
     return d
-    return 1
 
 def publicarParaRevision(idActividad, idJpReviso):
     d = {}
@@ -622,13 +658,16 @@ def obtenerNotaGrupo(idActividad, idGrupo, idJp):
 
 def editarNotaGrupo(idActividad, idGrupo, idRubrica, idJpAnt, idJpN, nota, listaNotaAspectos, flgFalta, flgCompleto):
     listaAlumnosGrupo = Alumno_actividad.query.filter(and_(Alumno_actividad.id_actividad == idActividad, Alumno_actividad.id_grupo == idGrupo)).all()
+    
     try:
         for alumno in listaAlumnosGrupo:
+            print(alumno)
             d = editarNotaAlumno(idActividad, alumno.id_alumno, idRubrica, idJpAnt, idJpN, nota, listaNotaAspectos, flgFalta, flgCompleto)
         return d
     except Exception as ex:
         d = {}
         d['succeed'] = False
+        
         d['message'] = str(ex)
         print(d['message'])
         return d
@@ -931,7 +970,14 @@ def sumaCoevaluacion(idGrupo, idActividad):
     #    d['succeed'] = False
     #    d['message'] = str(ex)
     #    return d
-            
+
+def elegirNotaMulticalificable(idActividad, idAlumno, notaFinal):
+    aux = Alumno_actividad().cambiarNota(idActividad, idAlumno, notaFinal)
+    d = {}
+    d['succeed'] = aux
+    d['message'] = 'Cambio correcto de nota.'
+    return d
+
 def obtenerNotaAlumnoPublicada(idAlumno, idActividad, tipo, idCalificador):
     #actividadSolicitada = Actividad.query.filter(and_(Actividad.id_actividad == idActividad)).first()
     #if actividadSolicitada.flg_multicalificable == 0:
@@ -941,13 +987,20 @@ def obtenerNotaAlumnoPublicada(idAlumno, idActividad, tipo, idCalificador):
         
         d = {}
 
+        d['notaFinal'] = aux.nota_publicada
         d['flgCalificado'] = aux.flg_calificado
         d['idActividad']= idActividad
         d['idAlumno']= idAlumno
 
+
         actividadAux = Actividad.query.filter(Actividad.id_actividad == idActividad).first()
         if actividadAux.flg_multicalificable == 1:
-            d['idCalificador']= idCalificador
+            alumnoCalificacion = Alumno_actividad_calificacion.query.filter(and_(Alumno_actividad_calificacion.id_actividad == idActividad, Alumno_actividad_calificacion.id_alumno == idAlumno, Alumno_actividad_calificacion.id_rubrica == actividadAnalizada.id_rubrica)).first()
+            if alumnoCalificacion is None:
+                d['idCalificador']= idCalificador
+            else:
+                d['idCalificador']= alumnoCalificacion.id_calificador
+
         else:
             alumnoCalificacion = Alumno_actividad_calificacion.query.filter(and_(Alumno_actividad_calificacion.id_actividad == idActividad, Alumno_actividad_calificacion.id_alumno == idAlumno, Alumno_actividad_calificacion.id_rubrica == actividadAnalizada.id_rubrica)).first()
             if alumnoCalificacion is None:
@@ -962,6 +1015,7 @@ def obtenerNotaAlumnoPublicada(idAlumno, idActividad, tipo, idCalificador):
         d['calificacion']= listarCalificacion(idAlumno, idActividad, idCalificador, actividadAnalizada.id_rubrica)
         
         return d
+
     else:
         d = {}
         d['succeed'] = False
@@ -976,4 +1030,25 @@ def obtenerNotaGrupoPublicada(idActividad, idGrupo, idJp):
         d = {}
         d['succeed'] = False
         d['message'] = str(ex)
+        return d
+
+def obtenerProfesoresPublicados(idActividad, idAlumno):
+    idRubricaEvaluacion = Rubrica().getIdRubricaEvaluacion(idActividad)
+    profesoresCalificados = Alumno_actividad_calificacion.query.filter(and_(Alumno_actividad_calificacion.id_rubrica == idRubricaEvaluacion, Alumno_actividad_calificacion.id_actividad == idActividad, Alumno_actividad_calificacion.id_alumno == idAlumno)).all()
+    d = {}
+    listaProfesores = []
+    if profesoresCalificados is not None:
+        for profesor in profesoresCalificados:
+            e = {}
+            e['idCalificador'] = profesor.id_calificador
+            calificador = Usuario.query.filter(Usuario.id_usuario == calificacion.id_calificador).first()
+            e['nombreCalificador'] = calificador.nombre + ' ' + calificador.apellido_paterno + ' ' + calificador.apellido_materno
+
+            listaProfesores.append(e)
+        d['listaProfesores'] = listaProfesores
+        return d
+    else:
+        d = {}
+        d['succeed'] = False
+        d['message'] = 'No hay publicaciones para este alumno.'
         return d
