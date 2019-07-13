@@ -275,3 +275,17 @@ class Elegir_nota_multicalificable_grupal(Resource):
         idGrupo = data['idGrupo']
         notaFinal = data['notaFinal']
         return controller.elegirNotaMulticalificableGrupal(idActividad, idGrupo, notaFinal)
+
+class Obtener_nota_final(Resource):
+    def post(self):
+        data = request.get_json()
+        idActividad = data['idActividad']
+        idAlumno = data['idAlumno']
+        return controller.obtenerNotaFinal(idActividad, idAlumno)
+
+class Obtener_nota_final_grupal(Resource):
+    def post(self):
+        data = request.get_json()
+        idActividad = data['idActividad']
+        idGrupo = data['idGrupo']
+        return controller.obtenerNotaFinalGrupal(idActividad, idGrupo)

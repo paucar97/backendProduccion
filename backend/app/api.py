@@ -189,4 +189,5 @@ api.add_resource(Elegir_nota_multicalificable, '/api/multicalificable/elegir_not
 api.add_resource(Obtener_profesores_calificados, '/api/actividad/mostrar_profesores')
 api.add_resource(Obtener_profesores_calificados_grupal, '/api/actividad/mostrar_profesores_grupal')
 api.add_resource(Elegir_nota_multicalificable_grupal, '/api/actividad/elegir_nota_grupal')
-
+api.add_resource(Obtener_nota_final, '/api/actividad/obtener_nota_final')
+api.add_resource(Obtener_nota_final_grupal, '/api/actividad/obtener_nota_final_grupal')
