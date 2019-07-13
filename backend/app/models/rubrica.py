@@ -59,3 +59,5 @@ class Rubrica(db.Model):
     def getIdRubricaEvaluacion(self,idActividad):
         d = Rubrica.query.filter_by(id_actividad = idActividad, flg_activo = 1, tipo = 4).first()
         return d.id_rubrica
+
+        #probado linea de codigo
