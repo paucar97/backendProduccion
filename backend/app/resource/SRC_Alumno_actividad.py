@@ -260,3 +260,10 @@ class Obtener_profesores_calificados(Resource):
         idActividad = data['idActividad']
         idAlumno = data['idAlumno']
         return controller.obtenerProfesoresPublicados(idActividad, idAlumno)
+
+class Obtener_profesores_calificados_grupal(Resource):
+    def post(self):
+        data = request.get_json()
+        idActividad = data['idActividad']
+        idGrupo = data['idGrupo']
+        return controller.obtenerProfesoresPublicadosGrupal(idActividad, idGrupo)

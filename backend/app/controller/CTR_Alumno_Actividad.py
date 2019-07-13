@@ -1052,3 +1052,25 @@ def obtenerProfesoresPublicados(idActividad, idAlumno):
         d['succeed'] = False
         d['message'] = 'No hay publicaciones para este alumno.'
         return d
+
+def obtenerProfesoresPublicadosGrupal(idActividad, idGrupo):
+    idRubricaEvaluacion = Rubrica().getIdRubricaEvaluacion(idActividad)
+    alumnoReferencia = Alumno_actividad.query.filter(and_(Alumno_actividad.id_actividad == idActividad, Alumno_actividad.id_grupo == idGrupo)).first()
+    profesoresCalificados = Alumno_actividad_calificacion.query.filter(and_(Alumno_actividad_calificacion.id_rubrica == idRubricaEvaluacion, Alumno_actividad_calificacion.id_actividad == idActividad, Alumno_actividad_calificacion.id_alumno == alumnoReferencia.id_alumno)).all()
+    d = {}
+    listaProfesores = []
+    if profesoresCalificados is not None:
+        for profesor in profesoresCalificados:
+            e = {}
+            e['idCalificador'] = profesor.id_calificador
+            calificador = Usuario.query.filter(Usuario.id_usuario == profesor.id_calificador).first()
+            e['nombreCalificador'] = calificador.nombre + ' ' + calificador.apellido_paterno + ' ' + calificador.apellido_materno
+
+            listaProfesores.append(e)
+        d['listaProfesores'] = listaProfesores
+        return d
+    else:
+        d = {}
+        d['succeed'] = False
+        d['message'] = 'No hay publicaciones para este alumno.'
+        return d
