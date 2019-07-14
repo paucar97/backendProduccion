@@ -299,10 +299,12 @@ def obtenerNotaAlumno(idAlumno, idActividad, tipo, idCalificador):
     print(idCalificador,d['idCalificador'])
 
     ### parche para multicalificable
-    alumnoCalificacion = Alumno_actividad_calificacion.query.filter(and_(Alumno_actividad_calificacion.id_actividad == idActividad, Alumno_actividad_calificacion.id_alumno == idAlumno, Alumno_actividad_calificacion.id_rubrica == actividadAnalizada.id_rubrica)).first()
-    if alumnoCalificacion != None:
-        if int(actividadSolicitada.flg_multicalificable) ==1 and int(d['flgCalificado']) == 1  and int(idCalificador) !=  int(alumnoCalificacion.id_calificador):
-            d['flgCalificado'] = 0 
+    if actividadAux.flg_multicalificable == 1:
+        alumnoCalificacion = Alumno_actividad_calificacion.query.filter(and_(Alumno_actividad_calificacion.id_actividad == idActividad, Alumno_actividad_calificacion.id_alumno == idAlumno, Alumno_actividad_calificacion.id_rubrica == actividadAnalizada.id_rubrica,Alumno_actividad_calificacion.id_calificador == idCalificador)).first()
+        if alumnoCalificacion is  None:
+            d['flgCalificado'] = 0
+        else:
+            d['flgCalificado'] = 1
     ###
     if aux.flg_calificado == 1 :
         d['flgIdCalificadorEsProfe'] = 0
