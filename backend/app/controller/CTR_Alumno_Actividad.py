@@ -295,6 +295,9 @@ def obtenerNotaAlumno(idAlumno, idActividad, tipo, idCalificador):
 
     d['calificacion']= listarCalificacion(idAlumno, idActividad, idCalificador, actividadAnalizada.id_rubrica)
     ## ESTO ES PARA EDITARA##
+    print(idCalificador,d['idCalificador'])
+    if int(actividadSolicitada.flg_multicalificable) ==1 and int(d['flgCalificado']) == 1  and int(idCalificador) !=  int(d['idCalificador']):
+        d['flgCalificado'] = 0 
     if aux.flg_calificado == 1 :
         d['flgIdCalificadorEsProfe'] = 0
         
