@@ -286,9 +286,10 @@ def obtenerNotaAlumno(idAlumno, idActividad, tipo, idCalificador):
         alumnoCalificacion = Alumno_actividad_calificacion.query.filter(and_(Alumno_actividad_calificacion.id_actividad == idActividad, Alumno_actividad_calificacion.id_alumno == idAlumno, Alumno_actividad_calificacion.id_rubrica == actividadAnalizada.id_rubrica)).first()
         if alumnoCalificacion is None:
             d['idCalificador']= idCalificador
+            print("calificado")
         else:
             d['idCalificador']= alumnoCalificacion.id_calificador
-
+            print("no calificado")
     d['idGrupo']= aux.id_grupo
     d['flgEntregable']= aux.flag_entregable
     d['idRubrica'] = actividadAnalizada.id_rubrica
@@ -296,8 +297,13 @@ def obtenerNotaAlumno(idAlumno, idActividad, tipo, idCalificador):
     d['calificacion']= listarCalificacion(idAlumno, idActividad, idCalificador, actividadAnalizada.id_rubrica)
     ## ESTO ES PARA EDITARA##
     print(idCalificador,d['idCalificador'])
-    if int(actividadSolicitada.flg_multicalificable) ==1 and int(d['flgCalificado']) == 1  and int(idCalificador) !=  int(d['idCalificador']):
-        d['flgCalificado'] = 0 
+
+    ### parche para multicalificable
+    alumnoCalificacion = Alumno_actividad_calificacion.query.filter(and_(Alumno_actividad_calificacion.id_actividad == idActividad, Alumno_actividad_calificacion.id_alumno == idAlumno, Alumno_actividad_calificacion.id_rubrica == actividadAnalizada.id_rubrica)).first()
+    if alumnoCalificacion != None:
+        if int(actividadSolicitada.flg_multicalificable) ==1 and int(d['flgCalificado']) == 1  and int(idCalificador) !=  int(alumnoCalificacion.id_calificador):
+            d['flgCalificado'] = 0 
+    ###
     if aux.flg_calificado == 1 :
         d['flgIdCalificadorEsProfe'] = 0
         
