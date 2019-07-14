@@ -57,8 +57,13 @@ class Alumno_actividad_calificacion(db.Model):
     @classmethod
     def editarNotaAlumno(self, idActividad, idAlumno, idJpAnt, idJpN ,nota, flgFalta, flgCompleto):
         print(idActividad, idAlumno, idJpAnt)
-        #alumnoActividad = Alumno_actividad_calificacion.query.filter_by(id_actividad = idActividad, id_alumno = idAlumno, id_calificador = idJpAnt).first()
-        alumnoActividad = Alumno_actividad_calificacion.query.filter_by(id_actividad = idActividad, id_alumno = idAlumno).first()
+        
+        actividadAux = Actividad.query.filter(Actividad.id_actividad == idActividad).first()
+        
+        if actividadAux.flg_multicalificable == 1:
+            alumnoActividad = Alumno_actividad_calificacion.query.filter_by(id_actividad = idActividad, id_alumno = idAlumno, id_calificador = idJpAnt).first()
+        else:        
+            alumnoActividad = Alumno_actividad_calificacion.query.filter_by(id_actividad = idActividad, id_alumno = idAlumno).first()
         
         alumnoActividad.nota = nota
         alumnoActividad.flg_falta = flgFalta
