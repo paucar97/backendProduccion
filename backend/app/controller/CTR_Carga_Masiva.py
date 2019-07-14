@@ -95,8 +95,8 @@ def getCorreoPucp(correos):
 def cargaMasivaHorarios(datos,idCurso,idEspecialidad):
     semestre=Semestre().getOne()
     idSemestre=semestre.id_semestre
-    print("="*20)
-    print(idSemestre)
+    #print("="*20)
+    #print(idSemestre)
     name = pathCargaMasivaAlumnoHorario+datos.filename
     data = datos.read()
     with open(name,'wb') as file:
@@ -105,7 +105,7 @@ def cargaMasivaHorarios(datos,idCurso,idEspecialidad):
     for i in range(6):
         doc.readline()
     df = pd.read_csv(doc ,sep ='\t',encoding = 'latin1')
-    #print(df)
+    ##print(df)
     df['E-mail'] = df['E-mail'].apply( lambda x: getCorreoPucp(x))
     df['nombres'] = df['Nombre'].apply(lambda x : SplitNombres(x)[0])
     df['apellido_paterno']= df['Nombre'].apply(lambda x : SplitNombres(x)[1]) 
@@ -132,8 +132,8 @@ def cargaMasivaHorarios(datos,idCurso,idEspecialidad):
 def cargaMasivaCursos(datos,idEspecialidad):
     semestre = Semestre().getOne()
     idSemestre = semestre.id_semestre #
-    print(datos)
-    print(idEspecialidad)
+    #print(datos)
+    #print(idEspecialidad)
     name = pathCargaMasivaCursoHorario + datos.filename
     data = datos.read()
     with open(name,'wb') as file:
@@ -181,19 +181,25 @@ def cargaMasivaProfesorJP(datos,idEspecialidad):
             horarios = str( df.iat[i,5]).split(',')
             for horario in horarios:   
                 horario = horario.replace(' ','')
-                print(idCurso,horario,idSemestre)
+                #print(idCurso,horario,idSemestre)
                 idHorario = Horario().getOneClave(idCurso,idSemestre,horario)
                 objUsuaHorario = Permiso_usuario_horario(id_horario = idHorario,id_usuario =idUsuario, id_permiso = 1,id_semestre = idSemestre)
                 Permiso_usuario_horario().addOne(objUsuaHorario)
             
-        else:
+        elif tipo == "0":
             horarios = Horario().getAll(idCurso,idSemestre)
             for horario in horarios:
                 
                 idHorario = horario.id_horario
                 objUsuaHorario = Permiso_usuario_horario(id_horario = idHorario,id_usuario =idUsuario, id_permiso = 3,id_semestre = idSemestre)
                 Permiso_usuario_horario().addOne(objUsuaHorario)
-            
-
+        else:
+            horarios = str( df.iat[i,5]).split(',')
+            for horario in horarios:   
+                horario = horario.replace(' ','')
+                print("permiso 4")
+                idHorario = Horario().getOneClave(idCurso,idSemestre,horario)
+                objUsuaHorario = Permiso_usuario_horario(id_horario = idHorario,id_usuario =idUsuario, id_permiso = 4,id_semestre = idSemestre)
+                Permiso_usuario_horario().addOne(objUsuaHorario)
 
     return {'message' : 'leyo bien'}

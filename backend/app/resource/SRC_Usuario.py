@@ -3,9 +3,9 @@ from flask import Flask, request
 from app.controller.CTR_Usuario import Login_Controlador
 class Login(Resource):
     def post(self):
-        #print(type(request))
-        #print(request)
-        print(request.json)
+        ##print(type(request))
+        ##print(request)
+        #print(request.json)
         data = request.get_json()
         
         clave = data['clave']

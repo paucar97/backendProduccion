@@ -6,8 +6,8 @@ class Subir_entregable(Resource):
     def post(self):
         #img_file = request.files.get('file')
         #request.files.getlist('file')[0]
-        #print(type(request))
-        print(request.form)
+        ##print(type(request))
+        #print(request.form)
         
         idActividad  = int(request.form['idActividad'])
         
@@ -28,7 +28,7 @@ class Subir_entregable(Resource):
             #listaIdFiles= request.files.get('file 1')
 
             #ImmutableMultiDict([('file 1', <FileStorage: 'ricardo.png' ('image/png')>), ('files 2', <FileStorage: 'ricardo.jpg' ('image/jpeg')>)])
-            print(listaFiles)
+            #print(listaFiles)
         elif tipo == 2:
             url = request.form['url']
         else:

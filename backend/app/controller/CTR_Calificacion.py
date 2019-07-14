@@ -122,7 +122,7 @@ def obtenerNotasFinales(idActividad,idRubrica):
             auxGrupo = Grupo().getOne(grupo.id_grupo).first()
             d['idGrupo'] = auxGrupo.id_grupo
             d['nombreGrupo' ] = auxGrupo.nombre
-            print(d)
+            #print(d)
             auxAl = Alumno_actividad().getAlumnoGrupo(auxGrupo.id_grupo,idActividad).first()
             auxAl2 = Alumno_actividad_calificacion().getNotaGrupo(idActividad,auxAl.id_alumno,idRubrica)
             if auxAl2 != None:

@@ -15,7 +15,7 @@ def obtenerCursosActivosXAlumno(idAlumno):
     for horario in listaHorarios:
         if horario.id_permiso == 2:
             curso, hor = Horario().obtenerCurso(horario.id_horario)
-            print(curso)
+            #print(curso)
             aux = {}
             aux['id_curso'] = curso.id_curso
             aux['nombre'] = curso.nombre
@@ -54,7 +54,7 @@ def obtenerCursosActivosXProfesor(idProfesor):
     """
     #listaHorarios = Permiso_usuario_horario().getHorarioActivo(semestreActivo.id_semestre, idProfesor)
     puh = Permiso_usuario_horario().getHorarioActivo(semestreActivo.id_semestre, idProfesor)
-    print(puh)
+    #print(puh)
     #listaHorarios = db.session.query(Horario).join(puh, puh.id_horario == Horario.id_horario).subquery()
     listaHorarios = db.session.query(Horario).join(puh, puh.ID_HORARIO == Horario.id_horario).subquery()
     listaCursos = Curso().getCursosActivos(semestreActivo)

@@ -633,9 +633,9 @@ def CrearActividad(idhorario, Nombre, tipo1, descripcion, fechaInicio, fechaFin,
     idActividad= Actividad().addOne(actividadObjeto)
 
     listaAlumnos= Permiso_usuario_horario().getAll(idSemestre,idhorario)
-    print(idSemestre,idhorario)
+    #print(idSemestre,idhorario)
     listaIdAlumnos=[]
-    print(listaAlumnos)
+    #print(listaAlumnos)
     for usuario in listaAlumnos:
         if usuario.id_permiso== 2: #Alumnos
             listaIdAlumnos.append(usuario.id_usuario)
@@ -674,7 +674,7 @@ def listarActividad(idHorario):
 def eliminarActividad(idActividad):
     actividad = Actividad().getOne(idActividad)
     nowStr = datetime.datetime.now().__str__()
-    print(nowStr)
+    #print(nowStr)
     now  = datetime.datetime.strptime(nowStr,'%Y-%m-%d %H:%M:%S.%f')
     fechaInicioActividad = datetime.datetime.strptime(actividad.fecha_inicio,'%Y-%m-%d %H:%M:%S.%f')
     if (now >= fechaInicioActividad):

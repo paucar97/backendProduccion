@@ -48,7 +48,7 @@ def mostrarEntregable(idActividad,idUsuario):
         d=[]
         
         for entregable in listaEntregables:
-            #print(entregable.json())
+            ##print(entregable.json())
             d.append(entregable.json())
         return d
     else:

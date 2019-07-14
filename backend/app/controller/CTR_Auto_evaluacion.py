@@ -77,9 +77,9 @@ def listarObjetosAutoevaluacion(idActividad):
             idencuesta=encuesta.id_encuesta
 
 
-    print(idencuesta)
+    #print(idencuesta)
     if idencuesta==0:
-        print('error')
+        #print('error')
         return
     encuesta=Encuesta().getOne(idencuesta)
     
@@ -122,8 +122,8 @@ def listarObjetosAutoevaluacion(idActividad):
     return l
 """
 def editarAutoEvaluacion(idActividad,listaFamilia):
-    print("="*20)
-    print(listaFamilia)
+    #print("="*20)
+    #print(listaFamilia)
     listaEncuesta=Horario_encuesta().getAll(idActividad)
     idencuesta=0
     for horario_encuesta in listaEncuesta:
@@ -134,7 +134,7 @@ def editarAutoEvaluacion(idActividad,listaFamilia):
             
       
     if idencuesta==0:
-        print('error')
+        #print('error')
         return
 
     listaEncuestaPregunta=Encuesta_pregunta().getAll(idencuesta)
@@ -185,7 +185,7 @@ def eliminarAutoEvaluacion(idActividad):
             idencuesta=encuesta.id_encuesta
             
     if idencuesta==0:
-        print('error')
+        #print('error')
         return
     listaEncuestaPregunta=Encuesta_pregunta().getAll(idencuesta)
     Encuesta_pregunta().eliminarFilas(idencuesta)

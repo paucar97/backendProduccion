@@ -306,9 +306,9 @@ def obtenerNotaAlumno(idAlumno, idActividad, tipo, idCalificador):
         flgEsProfe = 0
 
         for record in profes:
-            #print(idCalificador,record.id_usuario)
+            ##print(idCalificador,record.id_usuario)
             if int(record.id_usuario) == int(idCalificador):
-                #print('entro')
+                ##print('entro')
                 flgEsProfe = 1
             if record.id_usuario == d['idCalificador']:
                 d['flgIdCalificadorEsProfe'] = 1
@@ -412,7 +412,7 @@ def obtenerTodasCalificacionesMulti(idAlumno, idActividad, tipo):
 
 def editarNotaAlumno(idActividad, idAlumno, idRubrica, idJpAnt, idJpN, nota, listaNotaAspectos, flgFalta, flgCompleto):
     aux = Alumno_actividad_calificacion().editarNotaAlumno(idActividad, idAlumno, idJpAnt, idJpN, nota, flgFalta, flgCompleto)
-    print(idActividad, idAlumno, idRubrica)
+    #print(idActividad, idAlumno, idRubrica)
     #Alumno_actividad_calificacion().updateOneNota(idActividad,idAlumno,idRubrica,nota)
     for notaAspecto in listaNotaAspectos:
         idAspecto = notaAspecto['idAspecto']
@@ -643,9 +643,9 @@ def listarAlumnosNotas(idActividad):
             if reg.flg_falta == 1:
                 faltas += 1
         except Exception as ex:
-            print(reg)
-            print(str(ex))
-            print("Error en castear la nota")
+            #print(reg)
+            #print(str(ex))
+            #print("Error en castear la nota")
         
     d['listaNotas'] = notas
     notas  = dict(Counter(notas))
@@ -706,7 +706,7 @@ def editarNotaGrupo(idActividad, idGrupo, idRubrica, idJpAnt, idJpN, nota, lista
     
     try:
         for alumno in listaAlumnosGrupo:
-            print(alumno)
+            #print(alumno)
             d = editarNotaAlumno(idActividad, alumno.id_alumno, idRubrica, idJpAnt, idJpN, nota, listaNotaAspectos, flgFalta, flgCompleto)
         return d
     except Exception as ex:
@@ -714,7 +714,7 @@ def editarNotaGrupo(idActividad, idGrupo, idRubrica, idJpAnt, idJpN, nota, lista
         d['succeed'] = False
         
         d['message'] = str(ex)
-        print(d['message'])
+        #print(d['message'])
         return d
 
 def obtenerAutoevaluacion(idAlumno, idActividad):
@@ -873,7 +873,7 @@ def calificarAutoevaluacion(idActividad, idAlumno, idRubrica, nota, listaNotaAsp
         flg_completo = flgCompleto,
         flg_falta = flgFalta
     )
-    print(idActividad,idAlumno,idRubrica)
+    #print(idActividad,idAlumno,idRubrica)
     aux = Alumno_actividad_calificacion().addOne(calificacionIngresada)
 
     for notaAspecto in listaNotaAspectos:
@@ -981,7 +981,7 @@ def sumaCoevaluacion(idGrupo, idActividad):
         sumaCriterio = 0
         sumaCheck = 0
         aspectosAlumno = db.session.query(aspectos.c.ID_ASPECTO,Alumno_nota_aspecto.nota).join(Alumno_nota_aspecto, and_(aspectos.c.ID_ASPECTO == Alumno_nota_aspecto.id_aspecto, Alumno_nota_aspecto.id_alumno == miembro.id_usuario)).all()
-        print(aspectosAlumno)
+        #print(aspectosAlumno)
         lstAspectos = []
         for idAspecto,notaQ in aspectosAlumno:
             

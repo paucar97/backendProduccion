@@ -69,7 +69,7 @@ class Alumno_actividad(db.Model):
     @classmethod
     def getIdGrupo(self,idActividad,idUsuario):
         d = Alumno_actividad.query.filter_by(id_actividad = idActividad,id_alumno = idUsuario).first()
-        print(d)
+        #print(d)
         return d.id_grupo
     
     @classmethod

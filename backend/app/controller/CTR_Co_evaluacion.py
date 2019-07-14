@@ -46,9 +46,9 @@ def listarObjetosCoevaluacion(idActividad):
         if encuesta.tipo == 'COEVALUACION':
             idencuesta = encuesta.id_encuesta
             
-    print(idencuesta)
+    #print(idencuesta)
     if idencuesta == 0:
-        print('error')
+        #print('error')
         return
 
     encuesta = Encuesta().getOne(idencuesta)
@@ -79,7 +79,7 @@ def editarCoEvaluacion(idActividad,listaPregunta):
             
       
     if idencuesta==0:
-        print('error')
+        #print('error')
         return
 
     listaEncuestaPregunta = Encuesta_pregunta().getAll(idencuesta)
@@ -117,7 +117,7 @@ def eliminarCoEvaluacion(idActividad):
             idencuesta=encuesta.id_encuesta
             
     if idencuesta == 0:
-        print('error')
+        #print('error')
         return
         
     listaEncuestaPregunta = Encuesta_pregunta().getAll(idencuesta)

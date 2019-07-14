@@ -93,7 +93,7 @@ class Obtener_nota_grupo(Resource):
         idActividad = data['idActividad']
         idGrupo = data['idGrupo']
         idJp = data['idJp']
-        #print(idActividad,idGrupo,idJp)
+        ##print(idActividad,idGrupo,idJp)
         return controller.obtenerNotaGrupo(idActividad, idGrupo, idJp)
 
 class Editar_nota_grupo(Resource):
@@ -171,7 +171,7 @@ class Obtener_coevaluacion(Resource):
 class Calificar_autoevaluacion(Resource):
     def post(self):
         data = request.get_json()
-        print(data)
+        #print(data)
         idActividad = data['idActividad']
         idAlumno = data['idAlumno']
         nota = data['nota']

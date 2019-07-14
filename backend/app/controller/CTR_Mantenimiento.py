@@ -47,11 +47,11 @@ def obtenerEspecialidadxSemestre():
     semestreActivo = Semestre().getOne()
     idsemestre = semestreActivo.id_semestre
     especialidades = Semestre_especialidad().obtenerEspecialidadActivo(idsemestre)
-    print(especialidades)
+    #print(especialidades)
     lista = list()
     for especialidad in especialidades:
         idespecialidad = especialidad.id_especialidad
-        print(idespecialidad)
+        #print(idespecialidad)
         esp = Especialidad().getOne(idespecialidad)
         c = {}
         c['id_especialidad'] = esp.id_especialidad
