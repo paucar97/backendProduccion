@@ -18,12 +18,11 @@ def envioCorreo(destinatarios,asunto,mensage):
             server.login(correoSistemaSec,contrasenaSistemaSec)
             server.sendmail(correoSistemaSec,destinatarios,me)
             server.quit()
-            #print("ENVIO CORREOS")
+            print("ENVIO CORREOS")
         except Exception as ex:
-            #print("NO ENVIO CORREOS")
+            print("NO ENVIO CORREOS")
             #print(str(ex))
         return
-
     x = threading.Thread(target=funcion)
     x.start()
 

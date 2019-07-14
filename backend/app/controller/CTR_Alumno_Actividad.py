@@ -644,8 +644,8 @@ def listarAlumnosNotas(idActividad):
                 faltas += 1
         except Exception as ex:
             #print(reg)
-            #print(str(ex))
-            #print("Error en castear la nota")
+            print(str(ex))
+            print("Error en castear la nota")
         
     d['listaNotas'] = notas
     notas  = dict(Counter(notas))
