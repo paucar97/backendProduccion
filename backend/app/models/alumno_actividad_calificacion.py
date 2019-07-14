@@ -3,6 +3,7 @@ from app.models.alumno_actividad import Alumno_actividad
 from app.models.permiso_usuario_horario import Permiso_usuario_horario
 from app.models.rubrica import Rubrica
 from sqlalchemy import *
+from app.models.actividad import Actividad
 
 class Alumno_actividad_calificacion(db.Model):
     __tablename__ = 'alumno_actividad_calificacion'
