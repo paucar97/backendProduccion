@@ -286,10 +286,10 @@ def obtenerNotaAlumno(idAlumno, idActividad, tipo, idCalificador):
         alumnoCalificacion = Alumno_actividad_calificacion.query.filter(and_(Alumno_actividad_calificacion.id_actividad == idActividad, Alumno_actividad_calificacion.id_alumno == idAlumno, Alumno_actividad_calificacion.id_rubrica == actividadAnalizada.id_rubrica)).first()
         if alumnoCalificacion is None:
             d['idCalificador']= idCalificador
-            print("calificado")
+            print("no calificado")
         else:
             d['idCalificador']= alumnoCalificacion.id_calificador
-            print("no calificado")
+            print("calificado")
     d['idGrupo']= aux.id_grupo
     d['flgEntregable']= aux.flag_entregable
     d['idRubrica'] = actividadAnalizada.id_rubrica
@@ -334,7 +334,7 @@ def obtenerNotaAlumno(idAlumno, idActividad, tipo, idCalificador):
         d['flgIdCalificadorEsProfe'] =None
         d['flgMasUnoProfe'] =None
         d['flgEsProfe'] =None
-
+    print(d)
     return d
 
 
@@ -422,16 +422,21 @@ def obtenerTodasCalificacionesMulti(idAlumno, idActividad, tipo):
         return e
 
 def editarNotaAlumno(idActividad, idAlumno, idRubrica, idJpAnt, idJpN, nota, listaNotaAspectos, flgFalta, flgCompleto):
+    print("nota", nota)
     aux = Alumno_actividad_calificacion().editarNotaAlumno(idActividad, idAlumno, idJpAnt, idJpN, nota, flgFalta, flgCompleto)
     #print(idActividad, idAlumno, idRubrica)
     #Alumno_actividad_calificacion().updateOneNota(idActividad,idAlumno,idRubrica,nota)
     for notaAspecto in listaNotaAspectos:
+        #print(notaAspecto)
         idAspecto = notaAspecto['idAspecto']
         Alumno_nota_aspecto().updateNota(idActividad, idRubrica, idAspecto, idAlumno, notaAspecto['nota'], notaAspecto['comentario'])
         listaNotaIndicador = notaAspecto['listaNotaIndicador']
+        #print("nota de aspecto",notaAspecto['nota'])
 
         for notaIndicador in listaNotaIndicador:
+            #print(notaAspecto)
             Alumno_nota_indicador().updateNota(idActividad, idRubrica, idAspecto, idAlumno, notaIndicador['idIndicador'], notaIndicador['nota'], notaIndicador['comentario'])
+            #print("nota de indicador",notaIndicador['nota'])
 
     d = {}
     d['message'] = "succeed"

@@ -69,7 +69,7 @@ class Alumno_actividad_calificacion(db.Model):
         alumnoActividad.nota = nota
         alumnoActividad.flg_falta = flgFalta
         alumnoActividad.fecha_modificado = func.current_timestamp()
-        alumnoActividad.id_calificador = idJpN
+        #alumnoActividad.id_calificador = idJpN
         alumnoActividad.flg_completo = flgCompleto
         db.session.commit()
         return True

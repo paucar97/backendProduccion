@@ -43,8 +43,11 @@ class Alumno_nota_aspecto(db.Model):
 
     @classmethod
     def updateNota(self, idActividad, idRubrica, idAspecto, idAlumno, nota, comentario):
+        #print("idActividad, idRubrica, idAspecto, idAlumno, nota, comentario",idActividad, idRubrica, idAspecto, idAlumno, nota, comentario)
         alumnoAspectoNota = Alumno_nota_aspecto.query.filter_by(id_actividad = idActividad, id_alumno = idAlumno, id_rubrica = idRubrica, id_aspecto = idAspecto).first()
+        #print("alumnoAspectoNota",alumnoAspectoNota)
         alumnoAspectoNota.nota = nota
+        #print("alumnoAspectoNota.nota",alumnoAspectoNota.nota)
         alumnoAspectoNota.comentario = comentario
         db.session.commit()
         return
